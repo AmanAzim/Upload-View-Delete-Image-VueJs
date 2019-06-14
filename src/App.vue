@@ -1,7 +1,7 @@
 <template>
   <div class="App" id="app">
     <div class="container-fluid mt-5">
-
+      <h2 class="text-info text-center">Upload Images to Firebase</h2>
       <div class="row p-5">
         <div class="offset-md-3 col-md-6">
           <form>
