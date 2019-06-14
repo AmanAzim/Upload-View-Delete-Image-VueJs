@@ -23,10 +23,8 @@
         </div>
       </div>
       <hr>
-      <div class="row mt-2">
-        <h5 class="mb-2 text-center col-sm-12">Your selected images:</h5>
-      </div>
-      <div class="row mt-2 mb-2">
+      <div class="row mb-2">
+        <h5 class="offset-md-3 col-md-6">Your selected images:</h5>
         <div class="offset-md-3 col-md-7 mt-3 text-center">
           <span  class="mx-2 my-5" v-for="file in images" :key="file.id">
             <img :src="file.img" width="100px" height="100px"  />
