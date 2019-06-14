@@ -2,7 +2,8 @@
   <div class="App" id="app">
     <div class="container-fluid mt-5">
       <h2 class="text-info text-center">Upload Images to Firebase</h2>
-      <div class="row p-5">
+      <h5 class="text-danger text-center"><b>Vue.js</b></h5>
+      <div class="row p-2">
         <div class="offset-md-3 col-md-6">
           <form>
             <div class="input-group text-center">
@@ -22,7 +23,7 @@
         </div>
       </div>
       <hr>
-      <div class="row mt-5">
+      <div class="row mt-2">
         <h5 class="mb-2 text-center col-sm-12">Your selected images:</h5>
       </div>
       <div class="row mt-2 mb-2">
@@ -35,8 +36,8 @@
       </div>
       <hr>
       <div class="row mt-2">
-        <h5 class="offset-md-3 col-md-6 mt-3">Your uploaded images:</h5>
-        <div class="offset-md-2 col-md-8 mt-3">
+        <h5 class="offset-md-3 col-md-6">Your uploaded images:</h5>
+        <div class="offset-md-2 col-md-8 mt-1">
           <img  v-for="img in uploadedImagesUrl" v-bind:src="img.downloadURL" :key="img.id" width="100px" height="100px" style="margin:20px"/>
         </div>
       </div>
