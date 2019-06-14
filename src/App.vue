@@ -11,7 +11,7 @@
           </form>
         </div>
         <div class="offset-md-3 col-md-6 mt-3">
-          <button class="btn btn-primary" :disabled="uploadStart" v-on:click="fileUploadHandler">
+          <button class="btn btn-primary"  v-bind:disabled="uploadStart || images.length<=0" v-on:click="fileUploadHandler">
             {{uploadStart? 'Delete all items to upload again':'Upload Image'}}
           </button>
         </div>
@@ -37,7 +37,7 @@
       <div class="row mt-2">
         <h5 class="offset-md-3 col-md-6 mt-3">Your uploaded images:</h5>
         <div class="offset-md-2 col-md-8 mt-3">
-          <img  v-for="img in uploadedImagesUrl" v-bind:src="img.downloadURL" :key="img.id" width="100px" height="100px" style="{margin:'20px'}"/>
+          <img  v-for="img in uploadedImagesUrl" v-bind:src="img.downloadURL" :key="img.id" width="100px" height="100px" style="margin:20px"/>
         </div>
       </div>
       <hr>
@@ -47,6 +47,7 @@
 
 <script>
 import {storageRef} from './firebase/index';
+import 'bootstrap/dist/css/bootstrap.css';
 
 export default {
   data(){
@@ -88,17 +89,18 @@ export default {
       event.preventDefault();
 
       let P = new Promise((resolve) => {
-        resolve(() => {
-          this.uploadedImagesUrl = [];
+          this.uploadedImagesUrl = []
           this.uploadStart = true;
-        })
+          if(this.uploadedImagesUrl.length<=0 && this.uploadStart){
+              resolve();
+          }
       });
       //Inside then block that executes after resolve changes the state
       P.then(() => {
-        this.filesToUpload.forEach((file, index) => {
+        this.filesToUpload.forEach((file)=>{
 
           //Storing the image to firebase under "my_images" folder
-          const uploadTask = storageRef.child('my_images/' + file.name).put(file.img);
+          const uploadTask = storageRef.child('my_images_vue/' + file.name).put(file.img);
 
           //Three call back functions upon each upload operation 1.indicates progress, 2.shows error, 3. if successful gives the uploaded images URL
           uploadTask.on('state_changed', (snapshot) => {
@@ -108,9 +110,9 @@ export default {
             this.progress = this.progress + uploadProgress;
 
 
-          }, (error) => {
+          }, (error)=>{
             console.log(error);
-          }, () => {
+          }, ()=>{
 
             /*Indicates task Completation*/
             //If successful then get the url of the uploaded image
@@ -145,7 +147,7 @@ export default {
 
       //Safety check so that we only try to delete from firebase if the image is uploaded
       if(this.uploaded){
-        var desertRef = storageRef.child('my_images/'+file.img.name);//// Create a reference to the file to delete
+        var desertRef = storageRef.child('my_images_vue/'+file.img.name);//// Create a reference to the file to delete
         // Delete the file
         desertRef.delete().then(()=>{
 
@@ -154,9 +156,8 @@ export default {
           tempUploadedImagesUrl=tempUploadedImagesUrl.filter(item=>item.id!==id);
 
           return new Promise(resolve =>{
-            resolve(()=>{
-              this.uploadedImagesUrl=tempUploadedImagesUrl;
-            })
+            this.uploadedImagesUrl=tempUploadedImagesUrl;
+            resolve()
           }).then(()=>{
             if(this.uploadedImagesUrl.length<=0){
               this.uploadStart=false;
@@ -171,12 +172,12 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
 </style>
