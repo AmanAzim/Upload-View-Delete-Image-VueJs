@@ -7,13 +7,17 @@
         <div class="offset-md-3 col-md-6">
           <form>
             <div class="input-group text-center">
-              <input type="file" multiple class="form-control" v-on:change="fileSelectHandler"/>
+              <input type="file" multiple class="form-control" v-on:change="fileSelectHandler"  v-bind:disabled="uploadStart"/>
             </div>
           </form>
         </div>
         <div class="offset-md-3 col-md-6 mt-3">
-          <button class="btn btn-primary"  v-bind:disabled="uploadStart || images.length<=0" v-on:click="fileUploadHandler">
-            {{uploadStart? 'Delete all items to upload again':'Upload Image'}}
+          <button class="btn btn-primary"  v-bind:disabled="uploadStart || filesToUpload.length<=0" v-on:click="fileUploadHandler">
+             <span v-if="uploadStart">Delete all items to upload again</span>
+             <span v-else>
+                <span v-if="filesToUpload.length<=0">Select images first</span>
+                <span v-else>Upload images</span>
+             </span>
           </button>
         </div>
         <div class="offset-md-3 col-md-6 mt-3">
@@ -146,7 +150,7 @@ export default {
 
       //Safety check so that we only try to delete from firebase if the image is uploaded
       if(this.uploaded){
-        var desertRef = storageRef.child('my_images_vue/'+file.img.name);//// Create a reference to the file to delete
+        var desertRef = storageRef.child('my_images_vue/'+file.name);//// Create a reference to the file to delete
         // Delete the file
         desertRef.delete().then(()=>{
 
@@ -166,6 +170,15 @@ export default {
         }).catch((error)=>console.log(error));
       }
     },
+  },
+  beforeDestroy() {
+    let tempFilesToUpload=[...this.filesToUpload];
+    tempFilesToUpload.forEach(file=>{
+      var desertRef = storageRef.child('my_images/'+file.name);//// Create a reference to the file to delete
+      // Delete the file
+      desertRef.delete().then(()=>{
+      }).catch((error)=>console.log(error));
+    })
   }
 }
 </script>
